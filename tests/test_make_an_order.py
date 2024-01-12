@@ -1,9 +1,6 @@
-from operator import contains
 
 import pytest
 import requests
-
-from register import register_new_courier_and_return_login_password
 
 
 class TestMakeAnOrder:
