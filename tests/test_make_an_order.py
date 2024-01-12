@@ -1,8 +1,8 @@
-
+import allure
 import pytest
 import requests
 
-
+@allure.title('Создание заказа')
 class TestMakeAnOrder:
     URL = "https://qa-scooter.praktikum-services.ru"
     ENDPOINT = "/api/v1/orders"
@@ -12,6 +12,7 @@ class TestMakeAnOrder:
         ["BLACK", "GREY"],
         []
     ])
+    @allure.description('Создание заказа с использованием параметризации при выборе цвета самоката')
     def test_make_an_order(self, color_list):
         print(color_list)
 
