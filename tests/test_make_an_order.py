@@ -1,21 +1,22 @@
+import json
+
 import allure
 import pytest
 import requests
 
+from data import URL, ENDPOINT_MAKE_AN_ORDER
+
 @allure.title('Создание заказа')
 class TestMakeAnOrder:
-    URL = "https://qa-scooter.praktikum-services.ru"
-    ENDPOINT = "/api/v1/orders"
+
 
     @pytest.mark.parametrize('color_list',[
-        #["BLACK"] падает сервер. отвечает 500 ошибку.
+        ["BLACK"],
         ["BLACK", "GREY"],
         []
     ])
     @allure.description('Создание заказа с использованием параметризации при выборе цвета самоката')
     def test_make_an_order(self, color_list):
-        print(color_list)
-
         payload = {
             "firstName": "Naruto",
             "lastName": "Uchiha",
@@ -28,7 +29,10 @@ class TestMakeAnOrder:
             "color": color_list
         }
 
-        response = requests.post(f"{self.URL}{self.ENDPOINT}", data=payload)
+        headers = {'Content-Type': 'application/json'}
+
+        response = requests.post(f"{URL}{ENDPOINT_MAKE_AN_ORDER}", data=json.dumps(payload), headers=headers)
+
 
         assert response.status_code == 201 and 'track' in response.json()
 

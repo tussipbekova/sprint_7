@@ -1,29 +1,19 @@
-import random
-import string
 
 import allure
 import requests
 
-from register import register_new_courier_and_return_login_password
+from data import URL, ENDPOINT_GREATE_COURIER
+
 
 @allure.title('Создание курьера')
 class TestGreateCourier:
-    URL = "https://qa-scooter.praktikum-services.ru"
-    ENDPOINT = "/api/v1/courier"
 
-
-    def generate_random_string(self,length):
-        letters = string.ascii_lowercase
-        random_string = ''.join(random.choice(letters) for i in range(length))
-        return random_string
-
-
-    @allure.description('Успешное создание курьера')
-    def test_create_courier_success(self):
+    @allure.step('Успешное создание курьера')
+    def test_create_courier_success(self, generate_random_string):
         # генерируем логин, пароль и имя курьера
-        login = self.generate_random_string(10)
-        password = self.generate_random_string(10)
-        first_name = self.generate_random_string(10)
+        login = generate_random_string
+        password = generate_random_string
+        first_name = generate_random_string
 
         # собираем тело запроса
         payload = {
@@ -33,33 +23,70 @@ class TestGreateCourier:
         }
 
         # отправляем запрос на регистрацию курьера и сохраняем ответ в переменную response
-        response = requests.post(f"{self.URL}{self.ENDPOINT}", data=payload)
+        response = requests.post(f"{URL}{ENDPOINT_GREATE_COURIER}", data=payload)
 
         assert response.status_code == 201 and response.json() == {"ok":True}
 
-    @allure.description('Создание курьера повторно')
-    def test_create_courier_fail(self):
-        login, password, first_name = register_new_courier_and_return_login_password()
-        response = requests.post(f"{self.URL}{self.ENDPOINT}", json={'login': login, 'password': password, 'first_name': first_name})
+    @allure.step('Создание курьера повторно')
+    def test_create_courier_fail(self, register_new_courier_and_return_login_password):
+
+        login, password, first_name = register_new_courier_and_return_login_password
+        response = requests.post(f"{URL}{ENDPOINT_GREATE_COURIER}", json={'login': login, 'password': password, 'first_name': first_name})
 
         assert response.status_code == 409
 
-    @allure.description('Создание курьера без одного поля')
-    def test_missing_one_attribute(self):
+    @allure.step('Создание курьера без логина')
+    def test_missing_login(self, generate_random_string):
         # генерируем логин, пароль и имя курьера
-        login = self.generate_random_string(10)
-        password = self.generate_random_string(10)
-        first_name = self.generate_random_string(10)
+        login = generate_random_string
+        password = generate_random_string
+        first_name = generate_random_string
 
-        # собираем тело запроса
+        # собираем тело запроса без пароля
         payload = {
             "password": password,
             "firstName": first_name
         }
 
         # отправляем запрос на регистрацию курьера и сохраняем ответ в переменную response
-        response = requests.post(f"{self.URL}{self.ENDPOINT}", data=payload)
+        response = requests.post(f"{URL}{ENDPOINT_GREATE_COURIER}", data=payload)
 
         assert response.status_code == 400
+
+    @allure.step('Создание курьера без пароля')
+    def test_missing_password(self, generate_random_string):
+        # генерируем логин, пароль и имя курьера
+        login = generate_random_string
+        password = generate_random_string
+        first_name = generate_random_string
+
+        # собираем тело запроса без имени
+        payload = {
+            "login": login,
+            "firstName": first_name
+        }
+
+        # отправляем запрос на регистрацию курьера и сохраняем ответ в переменную response
+        response = requests.post(f"{URL}{ENDPOINT_GREATE_COURIER}", data=payload)
+
+        assert response.status_code == 400
+
+    @allure.step('Создание курьера без имени')
+    def test_missing_first_name(self, generate_random_string):
+        # генерируем логин, пароль и имя курьера
+        login = generate_random_string
+        password = generate_random_string
+        first_name = generate_random_string
+
+        # собираем тело запроса без логина
+        payload = {
+            "login": login,
+            "password": password,
+        }
+
+        # отправляем запрос на регистрацию курьера и сохраняем ответ в переменную response
+        response = requests.post(f"{URL}{ENDPOINT_GREATE_COURIER}", data=payload)
+
+        assert response.status_code == 201
 
 

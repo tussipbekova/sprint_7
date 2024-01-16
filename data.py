@@ -1,0 +1,5 @@
+URL = "https://qa-scooter.praktikum-services.ru"
+ENDPOINT_GREATE_COURIER = "/api/v1/courier"
+ENDPOINT_LOGIN_COURIER = "/api/v1/courier/login"
+ENDPOINT_MAKE_AN_ORDER = "/api/v1/orders"
+ENDPOINT_GET_LIST_OF_ORDERS = "/api/v1/orders"
